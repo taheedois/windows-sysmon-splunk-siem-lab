@@ -80,9 +80,11 @@ index=main host="SOC-LAB-01" EventCode=1
 | table _time ComputerName User Image CommandLine ParentImage ProcessId ParentProcessId ProcessGuid
 ```
 
-The result identified child PowerShell **PID 6044**, with original PowerShell **parent PID 6668**.
+The Sysmon process-creation event identified child PowerShell **PID 6040**, with original PowerShell **parent PID 6668**.
 
 ### Evidence: process investigation
+
+![Sysmon process creation evidence: child PowerShell and parent PID](screenshots/03-sysmon-powershell-process.png)
 
 ![PowerShell process investigation in Splunk](screenshots/11-splunk-powershell-investigation.png)
 
@@ -177,6 +179,6 @@ Windows endpoint monitoring · Sysmon · Windows Event Logs · Splunk Universal 
 
 ## Supporting materials
 
-- [Encoded PowerShell detection query and validation notes](detections/encoded-powershell.md)
+- [Copyable Splunk SPL detection](detections/encoded-powershell.spl) and [configuration / validation notes](detections/encoded-powershell.md)
 - [SOC investigation report](investigation-report.md)
 - [Complete screenshot evidence gallery (all 20 PNGs)](screenshots/README.md), with selected evidence embedded above. Screenshot 19 documents the index-time search and screenshot 20 documents the decoded payload.
