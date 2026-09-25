@@ -1,0 +1,7 @@
+index=main host="SOC-LAB-01" EventCode=1
+| search CommandLine="*-EncodedCommand*"
+| where _indextime >= relative_time(now(), "-5m")
+    AND _indextime < now()
+| eval IndexedTime=strftime(_indextime,"%Y-%m-%d %H:%M:%S")
+| sort - _indextime
+| table _time IndexedTime ComputerName User Image CommandLine ParentImage ProcessId ParentProcessId ProcessGuid
