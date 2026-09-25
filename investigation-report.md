@@ -21,7 +21,7 @@ Times below are **as displayed in the provided Splunk screenshots**; they are no
 
 | Activity | Evidence |
 | --- | --- |
-| Process creation | A child PowerShell process executed `Get-Process notepad`, recorded as process ID `6044`, with parent PowerShell process ID `6668`. |
+| Process creation | A child PowerShell process executed `Get-Process notepad`, recorded as process ID `6040`, with parent PowerShell process ID `6668`. |
 | Network activity | Original PowerShell process ID `6668` connected to `1.1.1.1` destination port `443` from local IP `10.0.2.15`, in a separate controlled `Test-NetConnection` exercise. |
 | Initial encoded-command event | Splunk showed an Event ID 1 execution at `07:17:35` with `-EncodedCommand`. |
 | Other controlled encoded-command events | Results also showed matching events at `07:24:31` and `07:33:05`. |
@@ -75,10 +75,14 @@ The revised query searches events from the last 24 hours and then filters `_inde
 
 Demonstrated Sysmon telemetry collection, event forwarding, SPL analysis, process/network investigation, decoding of a controlled PowerShell payload, initial alert triggering, and index-time-aware scheduled-search testing. The case does not claim a real intrusion or a fully production-hardened rule.
 
-## Evidence to attach
+## Evidence references
 
-- Sysmon Event ID 1 and Event ID 3 screenshots.
-- Splunk process and network investigation screenshots.
-- Initial triggered alerts and results screenshots.
-- Index-time-aware search result (keep screenshot **19**, not a duplicate screenshot 20).
-- Decoded PowerShell test screenshot (use screenshot **20** after renaming).
+All images are uploaded in the [20-image evidence gallery](screenshots/README.md). Key files:
+
+- [Sysmon Event ID 1 — process creation](screenshots/03-sysmon-powershell-process.png) and [Event ID 3 — network connection](screenshots/05-sysmon-network-connection.png).
+- [Splunk process investigation](screenshots/11-splunk-powershell-investigation.png), [network connection](screenshots/12-splunk-network-connection.png), and [correlation](screenshots/13-splunk-process-correlation.png).
+- [Initial triggered alerts](screenshots/17-splunk-alert-triggered.png) and [alert investigation results](screenshots/18-splunk-triggered-alert-investigation.png).
+- [Index-time-aware search result](screenshots/19-splunk-index-time-detection.png).
+- [Decoded PowerShell test](screenshots/20-powershell-payload-decoded.png).
+
+[Reusable SPL detection query](detections/encoded-powershell.spl) · [Detection configuration notes](detections/encoded-powershell.md).
