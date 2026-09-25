@@ -151,4 +151,4 @@ Windows endpoint monitoring · Sysmon · Windows Event Logs · Splunk Universal 
 
 - [Encoded PowerShell detection query and validation notes](detections/encoded-powershell.md)
 - [SOC investigation report](investigation-report.md)
-- Screenshots: pending upload to `screenshots/`. Only one copy of the index-time result will be retained (screenshot 19), followed by the decoded payload (screenshot 20).
+- [Screenshot evidence inventory](screenshots/README.md) — 20 PNGs organized; image upload pending. Only one copy of the index-time result will be retained (screenshot 19), followed by the decoded payload (screenshot 20).
