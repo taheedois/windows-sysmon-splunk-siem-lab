@@ -1,5 +1,7 @@
 # Lab 3 — Encoded PowerShell detection (Splunk SPL)
 
+[Download the standalone SPL query](encoded-powershell.spl) for copying into Splunk Search & Reporting.
+
 ## Scheduled detection query
 
 Run with the alert's event-time range set to **Last 24 hours**, cron schedule `*/5 * * * *`, trigger condition **number of results > 0**, trigger frequency **Once**, and the **Add to Triggered Alerts** action.
