@@ -149,4 +149,6 @@ Windows endpoint monitoring · Sysmon · Windows Event Logs · Splunk Universal 
 
 ## Supporting materials
 
-Screenshots, a standalone detection query, and an investigation report will be added to this repository to show the installation, telemetry, searches, troubleshooting, and alert-validation evidence.
+- [Encoded PowerShell detection query and validation notes](detections/encoded-powershell.md)
+- [SOC investigation report](investigation-report.md)
+- Screenshots: pending upload to `screenshots/`. Only one copy of the index-time result will be retained (screenshot 19), followed by the decoded payload (screenshot 20).
