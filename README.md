@@ -56,6 +56,12 @@ After installing Splunk Universal Forwarder and configuring the event-log input,
 
 I identified the forwarder's service account as `NT SERVICE\SplunkForwarder`, added or verified its membership in the local **Event Log Readers** group, and restarted the forwarder. I then confirmed that Sysmon events were searchable in Splunk Cloud under host `SOC-LAB-01`. One verification search returned **4,825 events** at that point in the lab; this is a point-in-time count, not a fixed ongoing total.
 
+### Evidence: Sysmon and Splunk ingestion
+
+![Sysmon installation](screenshots/01-sysmon-installation.png)
+
+![Sysmon events available in Splunk](screenshots/09-splunk-sysmon-ingestion.png)
+
 ## 2. Investigate process creation
 
 Sysmon **Event ID 1** records process creation details, including the executable, command line, user, and parent-process information.
@@ -76,6 +82,10 @@ index=main host="SOC-LAB-01" EventCode=1
 
 The result identified child PowerShell **PID 6044**, with original PowerShell **parent PID 6668**.
 
+### Evidence: process investigation
+
+![PowerShell process investigation in Splunk](screenshots/11-splunk-powershell-investigation.png)
+
 ## 3. Investigate network connections and correlate activity
 
 Sysmon **Event ID 3** showed the original PowerShell process making outbound TCP connections from `10.0.2.15` to `1.1.1.1:443` during controlled `Test-NetConnection` exercises.
@@ -95,6 +105,12 @@ index=main host="SOC-LAB-01" (EventCode=1 OR EventCode=3) (ProcessId=6668 OR Par
 
 The child process and network connections were related to the original PowerShell session, but **the child command did not cause the network connections**. These test activities occurred at separate times.
 
+### Evidence: network investigation and process correlation
+
+![PowerShell network connection in Splunk](screenshots/12-splunk-network-connection.png)
+
+![Process and network event correlation](screenshots/13-splunk-process-correlation.png)
+
 ## 4. Detect encoded PowerShell execution
 
 I generated a safe encoded PowerShell command using UTF-16LE (PowerShell's Unicode encoding for `-EncodedCommand`):
@@ -108,6 +124,10 @@ powershell.exe -NoProfile -EncodedCommand $encoded
 Sysmon recorded a new process creation event with `-EncodedCommand` in its command line. I created the scheduled Splunk alert **LAB3 - PowerShell Encoded Command Detection**. The initial alert configuration successfully produced triggered-alert records.
 
 During later validation, I found that several event timestamps were approximately **7 minutes 26 seconds** earlier than their Splunk indexing timestamps. A five-minute *event-time* window could therefore miss recently indexed events. This observed difference could involve forwarding latency, clock skew, or both; the lab did not establish a single underlying cause.
+
+### Evidence: initial triggered alert
+
+![Initial encoded PowerShell detection triggered](screenshots/17-splunk-alert-triggered.png)
 
 ### Index-time-aware SPL
 
@@ -127,6 +147,10 @@ The alert's cron schedule was `*/5 * * * *`, with the trigger condition **number
 
 **Validation status:** A scheduled-search results page showed one matching event for the updated index-time-aware query. A separate new *Triggered Alerts* record after this final tuning was not yet independently verified in the lab screenshots. The earlier, original scheduled alert did produce triggered-alert records.
 
+### Evidence: index-time-aware scheduled search
+
+![Scheduled search matching an encoded PowerShell execution after the index-time adjustment](screenshots/19-splunk-index-time-detection.png)
+
 ## 5. Decode and assess the test payload
 
 I decoded the controlled payload in PowerShell:
@@ -143,6 +167,10 @@ Write-Output 'LAB3-INDEX-TIME-VALIDATION'
 
 **Finding:** This was an authorized, harmless lab test that printed a string. The command-line flag alone would not justify treating the activity as malicious.
 
+### Evidence: decoded payload
+
+![PowerShell test payload decoded in the Windows lab](screenshots/20-powershell-payload-decoded.png)
+
 ## Skills practiced
 
 Windows endpoint monitoring · Sysmon · Windows Event Logs · Splunk Universal Forwarder · Splunk Cloud · SPL · Process and parent-process investigation · Network connection analysis · Scheduled detections · Event time vs. index time · PowerShell decoding · Troubleshooting · Investigation documentation
@@ -151,4 +179,4 @@ Windows endpoint monitoring · Sysmon · Windows Event Logs · Splunk Universal 
 
 - [Encoded PowerShell detection query and validation notes](detections/encoded-powershell.md)
 - [SOC investigation report](investigation-report.md)
-- [Screenshot evidence inventory](screenshots/README.md) — 20 PNGs organized; image upload pending. Only one copy of the index-time result will be retained (screenshot 19), followed by the decoded payload (screenshot 20).
+- [Complete screenshot evidence gallery (all 20 PNGs)](screenshots/README.md), with selected evidence embedded above. Screenshot 19 documents the index-time search and screenshot 20 documents the decoded payload.
